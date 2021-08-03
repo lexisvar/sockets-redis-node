@@ -18,19 +18,18 @@ var io = require('socket.io')(server, {
   }
 })
 
-io.on('connection', (socket) => {
-    
-    console.log("client connected")
-    var redisClient = redis.createClient()
-    redisClient.psubscribe('*')
- 
-    redisClient.on("pmessage", (subscribe, channel, data) => {
-      socket.emit(channel, data)
-      console.log(subscribe, channel, data)
-    })
- 
-    socket.on('disconnect', () => {
-      redisClient.quit()
-		  console.log("client disconnected")
-    })
+io.on('connection', (socket) => {    
+  console.log("client connected")
+  var redisClient = redis.createClient()
+  redisClient.psubscribe('*')
+
+  redisClient.on("pmessage", (subscribe, channel, data) => {
+    socket.emit(channel, data)
+    console.log(subscribe, channel, data)
+  })
+
+  socket.on('disconnect', () => {
+    redisClient.quit()
+    console.log("client disconnected")
+  })
 })
