@@ -34,14 +34,34 @@
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             if (input.value) {
-            socket.emit('chat message', user.value+': ' + input.value);
-            input.value = '';
+              socket.emit('message-64-28', 'sdsdsd');
+              var myHeaders = new Headers();
+              myHeaders.append("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9taS1jb25qdW50by5sb2NhbGhvc3RcL2FwaVwvYXV0aFwvbG9naW4tbW9iaWxlIiwiaWF0IjoxNjQyNjg2OTI0LCJleHAiOjE2NDI3MzAxMjQsIm5iZiI6MTY0MjY4NjkyNCwianRpIjoiOEJ6OXo4azBYakFGWFNtZCIsInN1YiI6NjQsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjciLCJjb25qdW50byI6MX0.4Qi1jDoytsBzRLPZASpMoQ975gVjqwHiPvSBggSKwxA");
+
+              var formdata = new FormData();
+              formdata.append("id_user_receptor", "28");
+              formdata.append("mensaje", input.value);
+
+              var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: formdata,
+                redirect: 'follow'
+              };
+
+              fetch("http://mi-conjunto.localhost/api/chats/mensaje-persona", requestOptions)
+                .then(response => response.text())
+                .then(result => console.log(result))
+                .catch(error => console.log('error', error));
+              input.value = '';
             }
         });
 
-        socket.on('chat message', function(msg) {
+        socket.on('message-64-28', function(msg) {
+          msg = JSON.parse(msg)
+          console.log(msg)
           var item = document.createElement('li');
-          item.textContent = msg;
+          item.textContent = msg.message.mensaje;
           messages.appendChild(item);
           window.scrollTo(0, document.body.scrollHeight);
         });

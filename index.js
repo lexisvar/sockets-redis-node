@@ -5,12 +5,16 @@ var ip = require('ip')
 require('dotenv').config()
 
 const public_ip = ip.address()
-const port = process.env.PORT || 7000
+const port = process.env.PORT || 3000
 
 server.listen(port,() => {
 	console.log(`Servidor  en http://localhost:${port}`)
   console.log(`Servidor  en http://${public_ip}:${port}`)
 })
+
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/index.html')
+});
  
 var io = require('socket.io')(server, {
   cors: {
@@ -22,10 +26,8 @@ io.on('connection', (socket) => {
   console.log("client connected")
   var redisClient = redis.createClient()
   redisClient.psubscribe('*')
-
   redisClient.on("pmessage", (subscribe, channel, data) => {
     socket.emit(channel, data)
-    console.log(subscribe, channel, data)
   })
 
   socket.on('disconnect', () => {
